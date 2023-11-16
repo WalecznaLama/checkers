@@ -20,16 +20,13 @@ class Game:
 			print("Draw!")
 
 	def check_jump(self, board):
-		pieces_with_jump = []
-		best_jump = []
+		board.is_jump = False
+		best_jump = None
 		for tile in board.tile_list:
 			if tile.occupying_piece is not None:
 				if tile.occupying_piece.color == board.turn:
 					piece = tile.occupying_piece
 					if len(piece.valid_jumps()) != 0:
+						# pieces_with_jump.append(piece)
 						board.is_jump = True
-						pieces_with_jump.append(piece)
-					else:
-						board.is_jump = False
-
 		# TODO how to not jump over 2 times same piece

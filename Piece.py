@@ -2,6 +2,8 @@ class Piece:
 	def __init__(self, row, column, color, board):
 		self.row = row
 		self.column = column
+		self.pose = (row, column)
+
 		self.color = color
 		self.board = board
 		self.is_alive = True
@@ -12,8 +14,9 @@ class Piece:
 		selected_tile = self.board.get_tile(row, column)
 		# TODO
 
-	def get_position(self):
-		return self.row, self.column
+	def get_pose(self):
+		pose = (self.row, self.column)
+		return pose
 
 	def is_alive(self):
 		return self.is_alive

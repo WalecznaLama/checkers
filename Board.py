@@ -3,8 +3,9 @@ from Tile import Tile
 
 
 def coordinate_to_pose(coordinate):  # Map coordinates (A1, B2, ...) to row, column
-    i_row = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7}
-    return int(coordinate[1]) - 1, i_row[coordinate[0].lower()]  # ! First column, then row (A1, B3,...) !
+    i_row = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7}
+    pose = (int(coordinate[1]) - 1, i_row[coordinate[0].upper()])  # ! First column, then row (A1, B3,...) !
+    return pose
 
 
 class Board:
@@ -18,14 +19,24 @@ class Board:
         self.is_jump = False
         self.selected_piece = None
 
+        # self.setup_config = [
+        #     [self.WHITE, self.EMPTY, self.WHITE, self.EMPTY, self.WHITE, self.EMPTY, self.WHITE, self.EMPTY],  # A
+        #     [self.EMPTY, self.WHITE, self.EMPTY, self.WHITE, self.EMPTY, self.WHITE, self.EMPTY, self.WHITE],  # B
+        #     [self.WHITE, self.EMPTY, self.WHITE, self.EMPTY, self.WHITE, self.EMPTY, self.WHITE, self.EMPTY],  # C
+        #     [self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY],  # D
+        #     [self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY],  # E
+        #     [self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK],  # F
+        #     [self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY],  # G
+        #     [self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK]]  # H
+
         self.setup_config = [
             [self.WHITE, self.EMPTY, self.WHITE, self.EMPTY, self.WHITE, self.EMPTY, self.WHITE, self.EMPTY],  # A
             [self.EMPTY, self.WHITE, self.EMPTY, self.WHITE, self.EMPTY, self.WHITE, self.EMPTY, self.WHITE],  # B
             [self.WHITE, self.EMPTY, self.WHITE, self.EMPTY, self.WHITE, self.EMPTY, self.WHITE, self.EMPTY],  # C
-            [self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY],  # D
+            [self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY],  # D
             [self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY],  # E
-            [self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK],  # F
-            [self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY],  # G
+            [self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.EMPTY, self.EMPTY, self.BLACK],  # F
+            [self.BLACK, self.EMPTY, self.EMPTY, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY],  # G
             [self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK]]  # H
 
         self.tile_list = self._generate_tiles()
@@ -70,15 +81,15 @@ class Board:
                             black_king += 1
         return white_piece, black_piece, white_king, black_king
 
-    def get_tile(self, row, column):
-        return self.tile_list[row][column]
+    def get_tile(self, pose):
+        return self.tile_list[pose[0]][pose[1]]
 
-    def is_tile_empty(self, row, column):
-        return self.get_tile(row, column).is_empty()
+    def is_tile_empty(self, pose):
+        return self.get_tile(pose).is_empty()
 
-    def get_tile_color(self, row, column):
-        if not self.is_tile_empty(row, column):
-            return self.get_tile(row, column).occupying_piece.color
+    def get_tile_color(self, pose):
+        if not self.is_tile_empty(pose):
+            return self.get_tile(pose).occupying_piece.color
         else:
             return self.EMPTY
 
@@ -92,8 +103,8 @@ class Board:
     def is_piece_selected(self):
         return self.selected_piece is not None
 
-    def handle_pose_input(self, row, column):  # TODO
-        selected_tile = self.get_tile(row, column)
+    def handle_pose_input(self, pose):  # TODO
+        selected_tile = self.get_tile(pose)
         if not self.is_piece_selected():  # user select piece
             if selected_tile.occupying_piece is None:
                 print("Selected empty tile. Choose again.")
@@ -111,24 +122,24 @@ class Board:
         poses = []
         for row in range(self.BOARD_SIZE):
             for column in range(self.BOARD_SIZE):
-                if self.get_tile_color(row, column) == self.WHITE:
-                    poses.append([row, column])
+                if self.get_tile_color([row, column]) == self.WHITE:
+                    poses.append((row, column))
         return poses
 
     def get_black_poses(self):
         poses = []
         for row in range(self.BOARD_SIZE):
             for column in range(self.BOARD_SIZE):
-                if self.get_tile_color(row, column) == self.BLACK:
-                    poses.append([row, column])
+                if self.get_tile_color((row, column)) == self.BLACK:
+                    poses.append((row, column))
         return poses
 
-    def get_current_board_state(self):  # returns colors positions on board
+    def get_current_board_state(self):  # returns BOARD_SIZExBOARD_SIZE list of colors positions on board
         r = []
         board = []
         for row in range(self.BOARD_SIZE):
             for column in range(self.BOARD_SIZE):
-                r.append(self.get_tile_color(row, column))
+                r.append(self.get_tile_color((row, column)))
             board.append(r)
             r = []
         return board
