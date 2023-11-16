@@ -1,0 +1,5 @@
+czarne pole, lewy dolny róg - pionek biały (A1), czarny (H8)
+biały zaczyna, poruszanie się po jednym polu na skos
+wielokrotne bicie w turze, bicie do przodu i do tyłu
+bicie obowiązkowe, trzeba bić tak aby zbić jak najwięcej
+pionek zdejmowany jest na koniec tury
