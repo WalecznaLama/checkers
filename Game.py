@@ -4,7 +4,8 @@ class Game:
 
 	def is_game_over(self, board):
 		white_piece, black_piece, white_king, black_king = board.get_pieces_number()
-		if white_king < 3 and black_king < 3:  # draw - 2 kings vs 2 kings, 1 king vs 2 kings
+		# draw - 2 kings vs 2 kings, 1 king vs 2 kings
+		if (white_piece < 3 and black_piece < 3) and (white_king == white_piece and black_king == black_piece):
 			return True
 		elif white_piece == 0 or black_piece == 0:
 			self.winner = "White" if white_piece > black_piece else "Black"

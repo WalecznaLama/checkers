@@ -26,8 +26,7 @@ class Board:
             [self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY],  # E
             [self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK],  # F
             [self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY],  # G
-            [self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK]   # H
-        ]
+            [self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK]]  # H
 
         self.tile_list = self._generate_tiles()
         self._setup()
@@ -80,6 +79,8 @@ class Board:
     def get_tile_color(self, row, column):
         if not self.is_tile_empty(row, column):
             return self.get_tile(row, column).occupying_piece.color
+        else:
+            return self.EMPTY
 
     def reset_tile_marks(self):
         for i in self.tile_list:
@@ -93,7 +94,6 @@ class Board:
 
     def handle_pose_input(self, row, column):  # TODO
         selected_tile = self.get_tile(row, column)
-
         if not self.is_piece_selected():  # user select piece
             if selected_tile.occupying_piece is None:
                 print("Selected empty tile. Choose again.")
@@ -111,7 +111,7 @@ class Board:
         poses = []
         for row in range(self.BOARD_SIZE):
             for column in range(self.BOARD_SIZE):
-                if self.get_tile(row, column).occupying_piece.color == self.WHITE:
+                if self.get_tile_color(row, column) == self.WHITE:
                     poses.append([row, column])
         return poses
 
@@ -119,6 +119,16 @@ class Board:
         poses = []
         for row in range(self.BOARD_SIZE):
             for column in range(self.BOARD_SIZE):
-                if self.get_tile(row, column).occupying_piece.color == self.BLACK:
+                if self.get_tile_color(row, column) == self.BLACK:
                     poses.append([row, column])
         return poses
+
+    def get_current_board_state(self):  # returns colors positions on board
+        r = []
+        board = []
+        for row in range(self.BOARD_SIZE):
+            for column in range(self.BOARD_SIZE):
+                r.append(self.get_tile_color(row, column))
+            board.append(r)
+            r = []
+        return board
