@@ -33,10 +33,10 @@ class Board:
             [self.WHITE, self.EMPTY, self.WHITE, self.EMPTY, self.WHITE, self.EMPTY, self.WHITE, self.EMPTY],  # A
             [self.EMPTY, self.WHITE, self.EMPTY, self.WHITE, self.EMPTY, self.WHITE, self.EMPTY, self.WHITE],  # B
             [self.WHITE, self.EMPTY, self.WHITE, self.EMPTY, self.WHITE, self.EMPTY, self.WHITE, self.EMPTY],  # C
-            [self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY],  # D
+            [self.EMPTY, self.BLACK, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY],  # D
             [self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY],  # E
             [self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.EMPTY, self.EMPTY, self.BLACK],  # F
-            [self.BLACK, self.EMPTY, self.EMPTY, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY],  # G
+            [self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY],  # G
             [self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.EMPTY]]  # H
 
         self.tile_list = self._generate_tiles()
@@ -103,18 +103,6 @@ class Board:
     def is_piece_selected(self):
         return self.selected_piece is not None
 
-    def handle_pose_input(self, pose):  # TODO
-        selected_tile = self.get_tile(pose)
-        if not self.is_piece_selected():  # user select piece
-            if selected_tile.occupying_piece is None:
-                print("Selected empty tile. Choose again.")
-                return False
-            elif selected_tile.occupying_piece.color != self.turn:
-                print("Selected opponent piece. Choose again.")
-                return False
-            else:
-                self.selected_piece = selected_tile.occupying_piece
-
     def get_opponent_color(self):
         return self.BLACK if self.turn == self.WHITE else self.WHITE
 
@@ -143,3 +131,4 @@ class Board:
             board.append(r)
             r = []
         return board
+

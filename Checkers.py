@@ -18,7 +18,7 @@ class Checkers:
 					input_message = 'Select target (e.g. A1 B2): '
 				user_input = input(input_message)
 				pose = Board.coordinate_to_pose(user_input)
-				board.handle_pose_input(pose)
+				game.handle_pose_input(board, pose)
 			else:
 				game.final_message()
 				self.running = False
