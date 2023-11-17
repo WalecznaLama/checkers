@@ -37,7 +37,7 @@ class Board:
             [self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY, self.EMPTY],  # E
             [self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.EMPTY, self.EMPTY, self.BLACK],  # F
             [self.BLACK, self.EMPTY, self.EMPTY, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY],  # G
-            [self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK]]  # H
+            [self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.BLACK, self.EMPTY, self.EMPTY]]  # H
 
         self.tile_list = self._generate_tiles()
         self._setup()

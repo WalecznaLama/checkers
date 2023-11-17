@@ -47,7 +47,8 @@ class King(Piece):
 					break
 		return valid_moves
 
-	def valid_jumps(self, pose):  # valid jumps with pose of beaten opponent  # TODO skip start pose in chain
+	# valid jumps with pose of beaten opponent, except_pose for skip start pose in chain
+	def valid_jumps(self, pose, except_pose=None):
 		valid_jumps = []
 		moves = self.possible_moves(pose)  # all possible piece moves, assuming that board is empty
 		opponent = self.board.get_opponent_color()
@@ -58,7 +59,8 @@ class King(Piece):
 			valid_behind_moves = []  # valid moves behind beaten opponent
 			for move in direction:
 				move_tile = (pose[0]+move[0], pose[1]+move[1])
-				if self.board.is_tile_empty(move_tile) and hit_opponent:  # empty tile behind opponent
+				# empty tile behind opponent
+				if (self.board.is_tile_empty(move_tile) or move_tile == except_pose) and hit_opponent:
 					valid_behind_moves.append(move)
 					beaten_pose = beaten_pose_buff
 				elif self.board.get_tile_color(move_tile) == opponent:  # tile with opponent
@@ -72,11 +74,11 @@ class King(Piece):
 				valid_behind_moves = []
 		return valid_jumps
 
-	def find_chain_jumps(self, current_position, beaten_pieces=None):
+	def find_chain_jumps(self, current_position, beaten_pieces=None, except_pose=None):
 		if beaten_pieces is None:
 			beaten_pieces = set()
 
-		valid_jumps = self.valid_jumps(current_position)
+		valid_jumps = self.valid_jumps(current_position, except_pose=except_pose)
 		all_chains = []
 
 		for beaten_pose, moves_after_beating in valid_jumps:
@@ -85,7 +87,7 @@ class King(Piece):
 				new_beaten_pieces.add(beaten_pose)
 				for move in moves_after_beating:
 					new_position = (current_position[0] + move[0], current_position[1] + move[1])
-					further_jumps = self.find_chain_jumps(new_position, new_beaten_pieces)
+					further_jumps = self.find_chain_jumps(new_position, new_beaten_pieces, except_pose)
 
 					if further_jumps:
 						for chain, beaten_in_chain in further_jumps:
@@ -96,7 +98,7 @@ class King(Piece):
 		return all_chains
 
 	def find_longest_chain_jumps(self):
-		chains = self.find_chain_jumps(self.pose)
+		chains = self.find_chain_jumps(self.pose, except_pose=self.pose)
 		longest_chains = []
 		if not chains:  # empty
 			return None
