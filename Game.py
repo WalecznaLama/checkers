@@ -4,11 +4,10 @@ def get_pieces_with_given_jumps(board, longest_chain_len):
 		for column in range(board.BOARD_SIZE):
 			pose = (row, column)
 			if board.get_tile_color(pose) == board.turn:
-				chains = board.get_tile(pose).occupying_piece.find_longest_chain_jumps()
+				chains, chain_len = board.get_tile(pose).occupying_piece.find_longest_chain_jumps()
 				if chains:
-					for chain in chains:
-						if len(chain[1]) == longest_chain_len:  # [1] are opponent poses
-							pieces_with_best_jumps.append(pose)
+					if chain_len == longest_chain_len:  # [1] are opponent poses
+						pieces_with_best_jumps.append(pose)
 	return pieces_with_best_jumps
 
 
@@ -26,16 +25,22 @@ def get_pieces_with_moves(board):
 
 def get_pieces_with_best_jumps(board):
 	longest_jump = 0
-	for tile in board.tile_list:
-		if tile.occupying_piece is not None:
-			if tile.occupying_piece.color == board.turn:
-				chain_len = tile.occupying_piece.find_longest_chain_jumps()
-				if chain_len:
+	for row in board.tile_list:
+		for tile in row:
+			if tile.occupying_piece is not None:
+				if tile.occupying_piece.color == board.turn:
+					_, chain_len = tile.occupying_piece.find_longest_chain_jumps()
 					longest_jump = max(longest_jump, chain_len)
 	if longest_jump != 0:
 		return get_pieces_with_given_jumps(board, longest_jump)
 	else:
 		return False
+
+
+def get_valid_jumps(piece):
+	piece_pose = piece.get_pose
+	# TODO
+	return
 
 
 class Game:

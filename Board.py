@@ -59,9 +59,21 @@ class Board:
         return tiles_8x8
 
     def draw(self):
-        for i, row in enumerate(reversed(self.tile_list)):  # reversed - more intuitive (0,0) bottom left
-            tile = [" " if item.occupying_piece is None else item.occupying_piece.representation for item in row]
-            print(f"{self.BOARD_SIZE - i} | {' | '.join(tile)} |")
+        selected_piece_pose = None if self.selected_piece is None else self.selected_piece.get_pose()
+        for i, row in enumerate(reversed(self.tile_list)):  # reversed - more intuitive (0,0)==A1 bottom left
+            tile_row = []
+            for t in row:
+                on_tile = ' '
+                if t.occupying_piece is not None:
+                    if t.occupying_piece.get_pose() == selected_piece_pose:
+                        on_tile = "\033[4m" + t.occupying_piece.representation + "\033[0m"
+                    else:
+                        on_tile = t.occupying_piece.representation
+                elif t.mark is not None:
+                    on_tile = t.mark
+                tile_row.append(on_tile)
+
+            print(f"{self.BOARD_SIZE - i} | {' | '.join(tile_row)} |")
             if i < self.BOARD_SIZE - 1:
                 print("  +---+---+---+---+---+---+---+---+")
         print("    A   B   C   D   E   F   G   H")
@@ -94,8 +106,9 @@ class Board:
             return self.EMPTY
 
     def reset_tile_marks(self):
-        for i in self.tile_list:
-            i.mark = None
+        for row in self.tile_list:
+            for t in row:
+                t.clear_mark()
 
     def next_turn(self):
         self.turn = self.BLACK if self.turn == self.WHITE else self.WHITE

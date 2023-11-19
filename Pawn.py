@@ -78,10 +78,10 @@ class Pawn(Piece):
     def find_longest_chain_jumps(self):
         chains = self._find_chain_jumps(self.pose, except_pose=self.pose)
         longest_chains = []
+        max_len = 0
         if not chains:  # empty
-            return False
+            return longest_chains, max_len
         else:  # find the longest chain
-            max_len = 0
             for i in chains:
                 max_len = max(max_len, len(i[0]))
 
@@ -89,4 +89,4 @@ class Pawn(Piece):
             if len(i[1]) == max_len:
                 longest_chains.append(i)
 
-        return longest_chains
+        return longest_chains, max_len
