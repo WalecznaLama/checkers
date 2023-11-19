@@ -22,10 +22,7 @@ class Pawn(Piece):
         for move in moves:
             if self.board.is_tile_empty((self.row + move[0], self.column + move[1])):
                 valid_moves.append(move)
-        if valid_moves:
-            return valid_moves
-        else:
-            return False
+        return valid_moves
 
     def _possible_jump_moves(self, pose):  # available jumps on empty board
         possible_moves = []
@@ -75,18 +72,21 @@ class Pawn(Piece):
 
         return all_chains
 
+    # returns be
     def find_longest_chain_jumps(self):
         chains = self._find_chain_jumps(self.pose, except_pose=self.pose)
-        longest_chains = []
+        longest_chains_jumps = []
+        longest_chains_beaten = []
         max_len = 0
         if not chains:  # empty
-            return longest_chains, max_len
+            return longest_chains_beaten, longest_chains_jumps, max_len
         else:  # find the longest chain
             for i in chains:
-                max_len = max(max_len, len(i[0]))
+                max_len = max(max_len, len(i[0]))  # [1] - beaten poses
 
         for i in chains:  # add the longest chains to return variable
-            if len(i[1]) == max_len:
-                longest_chains.append(i)
+            if len(i[1]) == max_len:  # [1] - beaten poses
+                longest_chains_beaten.append(i[1])
+                longest_chains_jumps.append(i[0])
 
-        return longest_chains, max_len
+        return longest_chains_beaten, longest_chains_jumps, max_len
