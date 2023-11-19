@@ -26,6 +26,9 @@ class Game:
 	def __init__(self):
 		self.winner = None
 		self.is_jump = False
+		self.valid_moves = []
+		self.valid_jumps = []
+		self.num_of_jump = 0
 
 	def is_game_over(self, board):
 		white_piece, black_piece, white_king, black_king = board.get_pieces_number()
@@ -61,31 +64,48 @@ class Game:
 
 	def handle_pose_input(self, board, pose):  # TODO
 		selected_tile = board.get_tile(pose)
-		if not board.is_piece_selected():  # user select piece
-			if not get_pieces_with_moves(board):
-				print("Over no moves")  # TODO
+		if not board.is_piece_selected():  # user select piece pose
+			pieces_with_jumps = self.get_pieces_with_best_jumps(board)
+			pieces_with_moves = get_pieces_with_moves(board)
+			if not pieces_with_jumps and not pieces_with_moves:  # No possible moves
+				print("Over - no moves")  # TODO
+				return False
 			elif selected_tile.occupying_piece is None:  # Empty tile
 				print("Selected empty tile. Choose again.")
 				return False
 			elif selected_tile.occupying_piece.color != board.turn:  # Wrong color selected
 				print("Selected opponent piece. Choose again.")
 				return False
-			else:
-				pieces_with_jumps = self.get_pieces_with_best_jumps(board)
-				if self.is_jump and pose not in pieces_with_jumps:  # Exist move with more jumps
-					print(f"Select one of pieces with jumps: {pieces_with_jumps}")
-					return False
-
-				# No possible move on selected piece
-				elif (not self.is_jump) and pose not in get_pieces_with_moves(board):
-					print(f"Select piece with move: {get_pieces_with_moves(board)}")
-					return False
+			elif self.is_jump and pose not in pieces_with_jumps:  # Exist move with more jumps
+				print(f"Select one of pieces with jumps: {pieces_with_jumps}")
+				return False
+			elif (not self.is_jump) and pose not in pieces_with_moves:  # No possible move on selected piece
+				print(f"Select piece with move: {pieces_with_moves}")
+				return False
+			else:  # Selected valid piece
 				board.selected_piece = selected_tile.occupying_piece
-				valid_moves = board.selected_piece.valid_moves()
-				_, valid_jumps, _ = board.selected_piece.find_longest_chain_jumps()
-				board.update_marks(valid_moves, valid_jumps)
-		else:  # user select target
-			print()  # TODO
-
-
-
+				self.valid_moves = board.selected_piece.valid_moves()
+				_, self.valid_jumps, _ = board.selected_piece.find_longest_chain_jumps()
+				board.update_marks(self.valid_moves, self.valid_jumps)
+		else:  # user select target tile pose
+			selected_jump = False
+			if self.is_jump:
+				for jumps in self.valid_jumps:
+					valid_jump = jumps[self.num_of_jump]
+					if pose == valid_jump:
+						selected_jump = True
+						break
+				if not selected_jump:
+					print(f"Select valid tile with jump.")
+					return False
+			elif not selected_jump:
+				selected_move = False
+				for moves in self.valid_moves:  # TODO
+					if pose in moves:
+						selected_move = True
+						break
+				if not selected_move:
+					print(f"Select tile with valid move.")
+					return False
+			else:
+				board.selected_piece.move(pose)  # TODO
