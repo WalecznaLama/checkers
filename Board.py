@@ -3,9 +3,13 @@ from Tile import Tile
 
 
 def coordinate_to_pose(coordinate):  # Map coordinates (A1, B2, ...) to row, column
-    i_row = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7}
-    pose = (int(coordinate[1]) - 1, i_row[coordinate[0].upper()])  # ! First column, then row (A1, B3,...) !
-    return pose
+    try:  # TODO
+        i_row = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7}
+        pose = (int(coordinate[1]) - 1, i_row[coordinate[0].upper()])  # ! First column, then row (A1, B3,...) !
+        return pose
+    except ValueError:
+        print(f"Wrong input!: {coordinate}")
+        return []
 
 
 class Board:
@@ -13,7 +17,7 @@ class Board:
     WHITE = 'w'
     BLACK = 'b'
     EMPTY = ''
-    
+
     def __init__(self):
         self.turn = self.WHITE  # white first turn
         self.is_jump = False
@@ -112,6 +116,7 @@ class Board:
 
     def next_turn(self):
         self.turn = self.BLACK if self.turn == self.WHITE else self.WHITE
+        self.selected_piece = None
 
     def is_piece_selected(self):
         return self.selected_piece is not None
@@ -156,7 +161,7 @@ class Board:
                         is_jump = True
                 if not is_jump:
                     for move in valid_moves:
-                        if pose in move:
+                        if pose in move or pose == move:
                             self.get_tile(pose).set_possible_move()
 
     def leave_tile(self, pose):

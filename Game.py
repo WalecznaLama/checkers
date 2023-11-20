@@ -64,6 +64,7 @@ class Game:
 
 	def handle_pose_input(self, board, pose):  # TODO
 		selected_tile = board.get_tile(pose)
+		selected_target = None
 		if not board.is_piece_selected():  # user select piece pose
 			pieces_with_jumps = self.get_pieces_with_best_jumps(board)
 			pieces_with_moves = get_pieces_with_moves(board)
@@ -88,24 +89,24 @@ class Game:
 				_, self.valid_jumps, _ = board.selected_piece.find_longest_chain_jumps()
 				board.update_marks(self.valid_moves, self.valid_jumps)
 		else:  # user select target tile pose
-			selected_jump = False
+			valid_select = False
 			if self.is_jump:
 				for jumps in self.valid_jumps:
 					valid_jump = jumps[self.num_of_jump]
 					if pose == valid_jump:
-						selected_jump = True
+						valid_select = True
 						break
-				if not selected_jump:
+				if not selected_target:
 					print(f"Select valid tile with jump.")
 					return False
-			elif not selected_jump:
-				selected_move = False
-				for moves in self.valid_moves:  # TODO
-					if pose in moves:
-						selected_move = True
+			elif not valid_select:
+				for moves in self.valid_moves:
+					if pose in moves or pose == moves:    # TODO king check
+						valid_select = True
 						break
-				if not selected_move:
+				if not valid_select:
 					print(f"Select tile with valid move.")
 					return False
-			else:
-				board.selected_piece.move(pose)  # TODO
+			if valid_select:
+				if board.selected_piece.move(pose, self.valid_jumps, self.valid_moves):
+					board.next_turn()  # TODO

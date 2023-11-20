@@ -41,8 +41,9 @@ class King(Piece):
 		moves = self.possible_moves(self.pose)
 		for direction in moves:
 			for move in direction:
-				if self.board.is_tile_empty((self.pose[0]+move[0], self.pose[1]+move[1])):
-					valid_moves.append(move)
+				move_pose = (self.pose[0]+move[0], self.pose[1]+move[1])
+				if self.board.is_tile_empty(move_pose):
+					valid_moves.append(move_pose)
 				else:
 					break
 		return valid_moves

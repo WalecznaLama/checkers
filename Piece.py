@@ -8,10 +8,12 @@ class Piece:
 		self.board = board
 		self.is_alive = True
 
-	def move(self, pose):
+	def move(self, pose, valid_jumps, valid_moves):
 		self.board.reset_tile_marks()
 
 		selected_tile = self.board.get_tile(pose)
+
+		return True
 		# TODO
 
 	def get_pose(self):

@@ -20,8 +20,9 @@ class Pawn(Piece):
         valid_moves = []
         moves = self._possible_moves()
         for move in moves:
-            if self.board.is_tile_empty((self.row + move[0], self.column + move[1])):
-                valid_moves.append(move)
+            move_pose = (self.pose[0] + move[0], self.pose[1] + move[1])
+            if self.board.is_tile_empty(move_pose):
+                valid_moves.append(move_pose)
         return valid_moves
 
     def _possible_jump_moves(self, pose):  # available jumps on empty board
