@@ -4,7 +4,7 @@ from Piece import Piece
 class King(Piece):
 	def __init__(self, row, column, color, board):
 		super().__init__(row, column, color, board)
-		self.representation = color.upper()
+		self.representation = self.representation.upper()
 
 	def possible_moves(self, pose):  # available moves on empty board  # TODO check if possible A, H, 1, 8
 		moves_ru = []  # RightUp (A1 to H8)
@@ -71,8 +71,8 @@ class King(Piece):
 					break
 			if hit_opponent:
 				valid_jumps.append([beaten_pose, valid_behind_moves])
-				beaten_pose = []
-				valid_behind_moves = []
+				beaten_pose = None
+				valid_behind_moves = None
 		return valid_jumps
 
 	def _find_chain_jumps(self, current_position, beaten_pieces=None, except_pose=None):

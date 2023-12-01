@@ -3,10 +3,9 @@ class Piece:
 		self.row = row
 		self.column = column
 		self.pose = (self.row, self.column)
-
 		self.color = color
 		self.board = board
-		self.is_alive = True
+		self.representation = self.color
 
 	def move(self, target_pose):
 		self.board.reset_tile_marks()
@@ -14,11 +13,14 @@ class Piece:
 		self.row = target_pose[0]
 		self.column = target_pose[1]
 		self.pose = (self.row, self.column)  # TODO check if necessary
-		self.board.get_tile(self.pose).occupying_piece = self
+		target_tile = self.board.get_tile(self.pose)
 
-		#  check if row 0 or 7 enough because pawn move possible forward only
-		if self.row == 0 or self.row == 7:  # TODO promotion to king ()
-			pass
+		#  check if row 0 or 7 is enough - pawn possible move forward only
+		if (self.row == 0 or self.row == 7) and self.representation.islower():
+			from King import King
+			target_tile.occupying_piece = King(self.row, self.column, self.color, self.board)
+		else:
+			target_tile.occupying_piece = self
 
 		return True
 
@@ -26,8 +28,3 @@ class Piece:
 		pose = (self.row, self.column)
 		return pose
 
-	def is_alive(self):
-		return self.is_alive
-
-	def kill(self):
-		self.is_alive = False

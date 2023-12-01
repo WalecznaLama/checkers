@@ -1,3 +1,6 @@
+import time
+
+
 def get_pieces_with_given_jumps(board, longest_chain_len):
 	pieces_with_best_jumps = []
 	for row in range(board.BOARD_SIZE):
@@ -116,8 +119,13 @@ class Game:
 			if valid_select:
 				if self.is_jump:
 					selected_chain = self.valid_jumps[no_jump]
-					print(selected_chain)
-					# TODO
+					beaten_in_chain = self.beaten_in_jumps[no_jump]
+					for p in selected_chain:
+						board.selected_piece.move(p)
+						board.draw()
+						time.sleep(1.5)
+					for op in beaten_in_chain:  # remove beaten pieces
+						board.get_tile(op).occupying_piece = None
 				else:  # normal move
 					board.selected_piece.move(pose)
 				board.next_turn()

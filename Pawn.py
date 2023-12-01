@@ -4,7 +4,6 @@ from Piece import Piece
 class Pawn(Piece):
     def __init__(self, row, column, color, board):
         super().__init__(row, column, color, board)
-        self.representation = color
 
     def _possible_moves(self):  # available moves on empty board
         possible_moves = []
@@ -73,7 +72,6 @@ class Pawn(Piece):
 
         return all_chains
 
-    # returns be
     def find_longest_chain_jumps(self):
         chains = self._find_chain_jumps(self.pose, except_pose=self.pose)
         longest_chains_jumps = []
