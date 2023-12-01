@@ -19,13 +19,12 @@ class Checkers:
 						input_message = f'Select no. jump (e.g. J0 J1): '
 						valid_jumps = game.valid_jumps
 						for i in range(len(valid_jumps)):
-							input_message += f"\nNo. {i} - {valid_jumps[i]}"
+							input_message += f"\nNo. {i} - {valid_jumps[i]}"  # TODO to coordinates
 						input_message += ": "
 					else:
 						input_message = 'Select target (e.g. A1 B2): '
 				user_input = input(input_message)
 				pose = Board.coordinate_to_pose(user_input)
-				print(pose)
 				game.handle_pose_input(board, pose)  # TODO
 			else:
 				game.final_message()

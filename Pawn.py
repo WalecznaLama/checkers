@@ -11,8 +11,8 @@ class Pawn(Piece):
         row_direction = 1 if self.color == self.board.WHITE else -1
         rules_moves = ((1 * row_direction, 1), (1 * row_direction, -1))
         for i in range(len(rules_moves)):
-            if (0 < self.row + rules_moves[i][0] < self.board.BOARD_SIZE - 1
-                    and 0 < self.column + rules_moves[i][1] < self.board.BOARD_SIZE - 1):
+            if (0 <= self.row + rules_moves[i][0] <= self.board.BOARD_SIZE - 1
+                    and 0 <= self.column + rules_moves[i][1] <= self.board.BOARD_SIZE - 1):
                 possible_moves.append(rules_moves[i])
         return possible_moves
 
