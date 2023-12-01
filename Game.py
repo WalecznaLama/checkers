@@ -28,7 +28,7 @@ class Game:
 		self.is_jump = False
 		self.valid_moves = []
 		self.valid_jumps = []
-		self.num_of_jump = 0
+		self.beaten_in_jumps = []
 
 	def is_game_over(self, board):
 		white_piece, black_piece, white_king, black_king = board.get_pieces_number()
@@ -40,6 +40,12 @@ class Game:
 			return True
 		else:
 			return False
+
+	def is_jump(self):
+		return self.is_jump
+
+	def valid_piece_jumps(self):
+		return self.valid_jumps
 
 	def final_message(self):
 		if self.winner is not None:
@@ -62,14 +68,13 @@ class Game:
 		else:
 			return []
 
-	def handle_pose_input(self, board, pose):  # TODO
+	def handle_pose_input(self, board, pose=(-1, -1), no_jump=-1):  # TODO
 		selected_tile = board.get_tile(pose)
-		selected_target = None
 		if not board.is_piece_selected():  # user select piece pose
 			pieces_with_jumps = self.get_pieces_with_best_jumps(board)
 			pieces_with_moves = get_pieces_with_moves(board)
 			if not pieces_with_jumps and not pieces_with_moves:  # No possible moves
-				print("Over - no moves")  # TODO
+				print("Over - no moves")  # TODO opponent wins
 				return False
 			elif selected_tile.occupying_piece is None:  # Empty tile
 				print("Selected empty tile. Choose again.")
@@ -86,18 +91,15 @@ class Game:
 			else:  # Selected valid piece
 				board.selected_piece = selected_tile.occupying_piece
 				self.valid_moves = board.selected_piece.valid_moves()
-				_, self.valid_jumps, _ = board.selected_piece.find_longest_chain_jumps()
+				self.beaten_in_jumps, self.valid_jumps, _ = board.selected_piece.find_longest_chain_jumps()
 				board.update_marks(self.valid_moves, self.valid_jumps)
-		else:  # user select target tile pose
+		else:  # user select target tile pose or jump / jumps chain
 			valid_select = False
 			if self.is_jump:
-				for jumps in self.valid_jumps:
-					valid_jump = jumps[self.num_of_jump]
-					if pose == valid_jump:
-						valid_select = True
-						break
-				if not selected_target:
-					print(f"Select valid tile with jump.")
+				if len(self.valid_jumps) > no_jump >= 0:
+					valid_select = True
+				if not valid_select:
+					print(f"Select valid jump.")
 					return False
 			elif not valid_select:
 				for moves in self.valid_moves:
@@ -108,5 +110,5 @@ class Game:
 					print(f"Select tile with valid move.")
 					return False
 			if valid_select:
-				if board.selected_piece.move(pose, self.valid_jumps, self.valid_moves):
-					board.next_turn()  # TODO
+				board.selected_piece.move(pose, self.valid_jumps[no_jump], self.beaten_in_jumps[no_jump])
+				board.next_turn()
