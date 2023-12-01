@@ -21,6 +21,8 @@ def get_pieces_with_moves(board):
 					pieces_with_moves.append(pose)
 	return pieces_with_moves
 
+# TODO jump chain modify when pawn turn into king
+
 
 class Game:
 	def __init__(self):
@@ -68,8 +70,8 @@ class Game:
 		else:
 			return []
 
-	def handle_pose_input(self, board, pose=(-1, -1), no_jump=-1):  # TODO
-		selected_tile = board.get_tile(pose)
+	def handle_pose_input(self, board, pose):  # TODO
+		selected_tile = board.get_tile(pose)  # TODO problem when jump?
 		if not board.is_piece_selected():  # user select piece pose
 			pieces_with_jumps = self.get_pieces_with_best_jumps(board)
 			pieces_with_moves = get_pieces_with_moves(board)
@@ -95,10 +97,12 @@ class Game:
 				board.update_marks(self.valid_moves, self.valid_jumps)
 		else:  # user select target tile pose or jump / jumps chain
 			valid_select = False
+			no_jump = -1
 			if self.is_jump:
-				if len(self.valid_jumps) > no_jump >= 0:
+				if len(self.valid_jumps) > pose[0] >= 0 and pose[1] == -1:
+					no_jump = pose[0]
 					valid_select = True
-				if not valid_select:
+				else:
 					print(f"Select valid jump.")
 					return False
 			elif not valid_select:
@@ -110,5 +114,10 @@ class Game:
 					print(f"Select tile with valid move.")
 					return False
 			if valid_select:
-				board.selected_piece.move(pose, self.valid_jumps[no_jump], self.beaten_in_jumps[no_jump])
+				if self.is_jump:
+					selected_chain = self.valid_jumps[no_jump]
+					print(selected_chain)
+					# TODO
+				else:  # normal move
+					board.selected_piece.move(pose)
 				board.next_turn()
