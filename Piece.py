@@ -6,6 +6,7 @@ class Piece:
 		self.color = color
 		self.board = board
 		self.representation = self.color
+		self.promotion_to_handle = False
 
 	def move(self, target_pose):
 		self.board.reset_tile_marks()
@@ -19,12 +20,17 @@ class Piece:
 		if (self.row == 0 or self.row == 7) and self.representation.islower():
 			from King import King
 			target_tile.occupying_piece = King(self.row, self.column, self.color, self.board)
+			self.promotion_to_handle = 2  # promotion -> 2
 		else:
 			target_tile.occupying_piece = self
 
-		return True
+		return 1  # ok -> 2
 
 	def get_pose(self):
-		pose = (self.row, self.column)
-		return pose
+		return self.pose
 
+	def is_promotion_to_handle(self):
+		return self.promotion_to_handle
+
+	def promotion_handled(self):
+		self.promotion_to_handle = False

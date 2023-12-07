@@ -1,5 +1,6 @@
 from Pawn import Pawn
 from Tile import Tile
+from robodk.Robot import Robot
 
 
 def coordinate_to_pose(coordinate):  # Map coordinates (A1, B2, ...) to row, column / or number of jump when J*
@@ -154,6 +155,10 @@ class Board:
     def is_piece_selected(self):
         return self.selected_piece is not None
 
+    def get_selected_piece_pose(self):
+        if self.is_piece_selected():
+            return self.selected_piece.get_pose()
+
     def get_opponent_color(self):
         return self.BLACK if self.turn == self.WHITE else self.WHITE
 
@@ -198,3 +203,22 @@ class Board:
 
     def leave_tile(self, pose):
         self.get_tile(pose).occupying_piece = None
+
+    def get_turn(self):
+        return self.turn
+
+    def get_promotion_column(self):
+        index_ = 0 if self.turn == self.WHITE else self.BOARD_SIZE - 1
+        row = self.tile_list[index_]
+        column_ = -1
+        for tile in row:
+            if tile.occupying_piece.is_promotion_to_handle():
+                column_ = tile.occupying_piece.get_pose()[1]
+
+        return column_
+
+    def promotion_handled(self):
+        index_ = 0 if self.turn == self.WHITE else self.BOARD_SIZE - 1
+        row = self.tile_list[index_]
+        for tile in row:
+            tile.occupying_piece.promotion_handled()
