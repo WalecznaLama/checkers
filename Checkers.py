@@ -62,6 +62,7 @@ class Checkers:
 					self.WhiteRobot.turn(moves_from, moves_to, beaten_in_chain, king_column)
 				else:
 					self.BlackRobot.turn(moves_from, moves_to, beaten_in_chain, king_column)
+				board.promotion_handled()
 			else:
 				game.final_message()
 				self.running = False
