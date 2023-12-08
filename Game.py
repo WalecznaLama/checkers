@@ -16,7 +16,7 @@ def get_pieces_with_given_jumps(board, longest_chain_len):
 
 class Game:
 	def __init__(self):
-		self.winner = None
+		self.winner = ''
 		self.is_jump = False
 		self.valid_moves = []
 		self.valid_jumps = []
@@ -24,13 +24,16 @@ class Game:
 		self.pieces_with_jumps = []
 		self.pieces_with_moves = []
 
-	def is_game_over(self, board):
+	def is_game_over(self, board, force_lose=False):
 		white_piece, black_piece, white_king, black_king = board.get_pieces_number()
 		# draw - 2 kings vs 2 kings, 1 king vs 2 kings
 		if (white_piece < 3 and black_piece < 3) and (white_king == white_piece and black_king == black_piece):
 			return True
 		elif white_piece == 0 or black_piece == 0:
 			self.winner = "White" if white_piece > black_piece else "Black"
+			return True
+		elif force_lose:
+			self.winner = "White" if board.get_turn() == board.BLACK else "Black"
 			return True
 		else:
 			return False
@@ -77,13 +80,14 @@ class Game:
 		return self.pieces_with_jumps
 
 	def handle_pose_input(self, board, pose):
-		selected_tile = board.get_tile(pose)  # TODO problem when jump? [pose=(J,-1)]
+		selected_tile = board.get_tile(pose)
 		empty_output = [], [], [], -1
 		if not board.is_piece_selected():  # user select piece pose
 			self.get_pieces_with_best_jumps(board)
 			self.get_pieces_with_moves(board)
 			if not self.pieces_with_jumps and not self.pieces_with_moves:  # No possible moves
-				print("Over - no moves")  # TODO opponent wins
+				print("Over - no moves")
+				self.is_game_over(board, True)
 			elif selected_tile.occupying_piece is None:  # Empty tile
 				print("Selected empty tile. Choose again.")
 			elif selected_tile.occupying_piece.color != board.turn:  # Wrong color selected
@@ -92,13 +96,13 @@ class Game:
 				print(f"Select one of pieces with jumps: {self.pieces_with_jumps}")
 			elif (not self.is_jump) and pose not in self.pieces_with_moves:  # No possible move on selected piece
 				print(f"Select piece with move: {self.pieces_with_moves}")
-			else:  # Select valid piece
+			else:  # Selected valid piece
 				board.selected_piece = selected_tile.occupying_piece
 				self.valid_moves = board.selected_piece.valid_moves()
 				self.beaten_in_jumps, self.valid_jumps, _ = board.selected_piece.find_longest_chain_jumps()
 				board.update_marks(self.valid_moves, self.valid_jumps)
 			return empty_output
-		else:  # user select target tile pose or jump / jumps chain
+		else:  # user select target pose or jumps
 			valid_select = False
 			no_jump = -1
 			if self.is_jump:
@@ -127,17 +131,16 @@ class Game:
 					for p in selected_jump:
 						moves_from.append(board.selected_piece.get_pose())
 						move_status = board.selected_piece.move(p)
-						if move_status == 2:
+						if move_status == 2:  # TODO constant
 							king_column = p[1]
 						# board.draw()
-						# time.sleep(1.5)
 					for op in beaten_in_chain:  # remove beaten pieces
 						board.get_tile(op).occupying_piece = None
 				else:  # normal move
 					moves_from.append(board.selected_piece.get_pose())
 					move_status = board.selected_piece.move(pose)
 					moves_to = [pose]
-					if move_status == 2:
+					if move_status == 2:  # TODO constant
 						king_column = pose[1]
 				board.next_turn()
 				return moves_from, moves_to, beaten_in_chain, king_column

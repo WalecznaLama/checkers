@@ -5,7 +5,7 @@ from robolink import *    # Robot toolbox
 class Robot:
     D_BETWEEN_TITLES = 45
     D_BETWEEN_KINGS = 40
-    D_APPROACH = 70
+    D_APPROACH = 80
     D_PAWN_HEIGHT = 10
 
     def __init__(self, robot_color):
@@ -39,10 +39,8 @@ class Robot:
         self.used_kings = 0
         self.beaten_pawns = 0
 
-        if self.color == 'White':
-            self.robot.setDO(self.SIGNAL_NAME, 1)
-        else:
-            self.robot.setDO(self.SIGNAL_NAME, 0)
+        init_signal_ = 1 if self.color == 'White' else 0
+        self.robot.setDO(self.SIGNAL_NAME, init_signal_)
 
         self.robot.setPoseTool(self.tool)
         self.robot.MoveJ(self.t_home)
@@ -78,32 +76,35 @@ class Robot:
         self.move_l(self.t_a1, [pose[0] * self.D_BETWEEN_TITLES,
                                 pose[1] * self.D_BETWEEN_TITLES, -self.D_APPROACH])
 
-    def pick_king(self, n):
-        r = n // 2
-        c = n % 2
+    def pick_king(self):
+        r = self.used_kings // 2
+        c = self.used_kings % 2
         self.move_j(self.t_king, [r * self.D_BETWEEN_KINGS, c * self.D_BETWEEN_KINGS, -self.D_APPROACH])
         self.move_l(self.t_king, [r * self.D_BETWEEN_KINGS, c * self.D_BETWEEN_KINGS, 0.0])
         self.p_attach.RunProgram()
         self.p_attach.WaitFinished()
         self.move_l(self.t_king, [r * self.D_BETWEEN_KINGS, c * self.D_BETWEEN_KINGS, -self.D_APPROACH])
-        n += 1
+        self.used_kings += 1
 
-    def place_dead(self, n):
-        self.move_j(self.t_beaten_stack, [0.0, 0.0, -self.D_APPROACH - (n * self.D_PAWN_HEIGHT)])
-        self.move_l(self.t_beaten_stack, [0.0, 0.0, -(n * self.D_PAWN_HEIGHT)])
+    def place_dead(self):
+        stack = self.beaten_pawns % 2
+        height_multiply = self.beaten_pawns // 2
+
+        self.move_j(self.t_beaten_stack, [stack*self.D_BETWEEN_TITLES, 0.0,
+                                          -self.D_APPROACH - (self.beaten_pawns * self.D_PAWN_HEIGHT)])
+        self.move_l(self.t_beaten_stack, [stack*self.D_BETWEEN_TITLES, 0.0, -(height_multiply * self.D_PAWN_HEIGHT)])
         self.p_detach.RunProgram()
         self.p_detach.WaitFinished()
-        self.move_l(self.t_beaten_stack, [0.0, 0.0, -self.D_APPROACH - (n * self.D_PAWN_HEIGHT)])
-        n += 1
+        self.move_l(self.t_beaten_stack, [stack*self.D_BETWEEN_TITLES, 0.0,
+                                          -self.D_APPROACH - (height_multiply * self.D_PAWN_HEIGHT)])
+        self.beaten_pawns += 1
 
     def pawn_to_king(self, column):
-        row = 7 if self.color == 'White' else 0
-        pose = (row, column)
-        self.pick_pawn(pose)
-        self.place_dead(self.beaten_pawns + self.used_kings)
-        self.pick_king(self.used_kings)
-        self.place_pawn(pose)
-        self.used_kings += 1
+        row_ = 7 if self.color == 'White' else 0
+        pose_ = (row_, column)
+        self.remove_pawn(pose_)
+        self.pick_king()
+        self.place_pawn(pose_)
 
     def move_pawn(self, pose_from, pose_to):
         self.pick_pawn(pose_from)
@@ -111,8 +112,7 @@ class Robot:
 
     def remove_pawn(self, pose):
         self.pick_pawn(pose)
-        self.place_dead(self.beaten_pawns + self.used_kings)
-        self.beaten_pawns += 1
+        self.place_dead()
 
     def wait_to_opponent(self):
         self.p_wait.RunProgram()
@@ -129,11 +129,11 @@ class Robot:
         king_column_ = king_column
 
         for i in range(len(moves_from)):
-            move_from = moves_from[i]
-            move_to = moves_to[i]
-            self.move_pawn(move_from, move_to)
-            if move_to[1] == king_column_:
-                self.pawn_to_king(move_to[1])
+            move_from_ = moves_from[i]
+            move_to_ = moves_to[i]
+            self.move_pawn(move_from_, move_to_)
+            if move_to_[1] == king_column_:
+                self.pawn_to_king(king_column_)
                 king_column_ = -1  # promotion handled
 
         remove_pawn_ = [elem for elem in remove_pawn]  # set to list

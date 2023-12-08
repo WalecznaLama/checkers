@@ -1,4 +1,6 @@
 class Piece:
+	OUT_PROMOTE = 2
+
 	def __init__(self, row, column, color, board):
 		self.row = row
 		self.column = column
@@ -21,10 +23,10 @@ class Piece:
 			from King import King
 			target_tile.occupying_piece = King(self.row, self.column, self.color, self.board)
 			self.promotion_to_handle = True
-			return 2  # promotion -> 2
+			return self.OUT_PROMOTE  # promotion -> 2
 		else:
 			target_tile.occupying_piece = self
-			return 1  # ok normal -> 1
+			return 0  # ok normal -> 0
 
 	def get_pose(self):
 		return self.pose
