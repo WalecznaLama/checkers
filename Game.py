@@ -23,17 +23,18 @@ class Game:
 		self.beaten_in_jumps = []
 		self.pieces_with_jumps = []
 		self.pieces_with_moves = []
+		self.lose_in_turn = False
 
-	def is_game_over(self, board, force_lose=False):
+	def is_game_over(self, board):
 		white_piece, black_piece, white_king, black_king = board.get_pieces_number()
-		# draw - 2 kings vs 2 kings, 1 king vs 2 kings
-		if (white_piece < 3 and black_piece < 3) and (white_king == white_piece and black_king == black_piece):
+		if self.lose_in_turn:
+			self.winner = "White" if board.get_turn() == board.BLACK else "Black"
 			return True
 		elif white_piece == 0 or black_piece == 0:
 			self.winner = "White" if white_piece > black_piece else "Black"
 			return True
-		elif force_lose:
-			self.winner = "White" if board.get_turn() == board.BLACK else "Black"
+		# draw - 2 kings vs 2 kings, 1 king vs 2 kings
+		elif (white_piece < 3 and black_piece < 3) and (white_king == white_piece and black_king == black_piece):
 			return True
 		else:
 			return False
@@ -45,7 +46,7 @@ class Game:
 		return self.valid_jumps
 
 	def final_message(self):
-		if self.winner is not None:
+		if self.winner != '':
 			print(f"{self.winner} Wins!")
 		else:
 			print("Draw!")
@@ -86,8 +87,8 @@ class Game:
 			self.get_pieces_with_best_jumps(board)
 			self.get_pieces_with_moves(board)
 			if not self.pieces_with_jumps and not self.pieces_with_moves:  # No possible moves
+				self.lose_in_turn = True
 				print("Over - no moves")
-				self.is_game_over(board, True)
 			elif selected_tile.occupying_piece is None:  # Empty tile
 				print("Selected empty tile. Choose again.")
 			elif selected_tile.occupying_piece.color != board.turn:  # Wrong color selected

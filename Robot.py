@@ -46,6 +46,11 @@ class Robot:
         self.robot.MoveJ(self.t_home)
         self.robot.setPoseFrame(self.f_board)
 
+        if self.color == 'White':
+            p_dk_init = self.Rdk.Item(f'Init', ITEM_TYPE_PROGRAM)
+            p_dk_init.RunProgram()
+            p_dk_init.WaitFinished()
+
     def move_j(self, target, transposition=None):
         pose = target.Pose()
         if transposition and len(transposition) == 3:

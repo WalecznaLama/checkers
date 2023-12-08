@@ -15,7 +15,7 @@ class Piece:
 		self.board.get_tile(self.pose).occupying_piece = None
 		self.row = target_pose[0]
 		self.column = target_pose[1]
-		self.pose = (self.row, self.column)  # TODO check if necessary
+		self.pose = (self.row, self.column)
 		target_tile = self.board.get_tile(self.pose)
 
 		#  check if row 0 or 7 is enough - pawn possible move forward only
