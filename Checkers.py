@@ -24,7 +24,7 @@ def player_input(board, game):
 
 
 def bot_input(board, game):
-	pieces_with_jumps = game.get_pieces_with_best_jumps(board)  # TODO
+	pieces_with_jumps = game.get_pieces_with_best_jumps(board)
 	pieces_with_moves = game.get_pieces_with_moves(board)
 	if not board.is_piece_selected():
 		return ChessBot.select_piece(pieces_with_jumps, pieces_with_moves)

@@ -6,7 +6,7 @@ class King(Piece):
 		super().__init__(row, column, color, board)
 		self.representation = self.representation.upper()
 
-	def possible_moves(self, pose):  # available moves on empty board  # TODO check if possible A, H, 1, 8
+	def possible_moves(self, pose):  # available moves on empty board
 		moves_ru = []  # RightUp (A1 to H8)
 		moves_rd = []  # RightDown (A8 to H1)
 		moves_ld = []  # LeftDown (H8 to A1)

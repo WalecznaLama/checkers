@@ -11,8 +11,6 @@ def get_pieces_with_given_jumps(board, longest_chain_len):
 					pieces_with_best_jumps.append(pose)
 	return pieces_with_best_jumps
 
-# TODO jump chain modify when pawn turn into king
-
 
 class Game:
 	def __init__(self):
