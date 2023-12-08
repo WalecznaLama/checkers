@@ -49,7 +49,7 @@ class Checkers:
 		board = Board.Board()
 		while self.running:
 			self.turn = board.get_turn()
-			# board.draw()
+			board.draw()
 			if not game.is_game_over(board):
 				# if self.turn == board.WHITE:
 				# 	coordinates = player_input(board, game)

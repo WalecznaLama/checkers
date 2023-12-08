@@ -20,11 +20,11 @@ class Piece:
 		if (self.row == 0 or self.row == 7) and self.representation.islower():
 			from King import King
 			target_tile.occupying_piece = King(self.row, self.column, self.color, self.board)
-			self.promotion_to_handle = 2  # promotion -> 2
+			self.promotion_to_handle = True
+			return 2  # promotion -> 2
 		else:
 			target_tile.occupying_piece = self
-
-		return 1  # ok -> 2
+			return 1  # ok normal -> 1
 
 	def get_pose(self):
 		return self.pose

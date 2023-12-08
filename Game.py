@@ -42,11 +42,10 @@ class Game:
 		return self.valid_jumps
 
 	def final_message(self):
-		print()
-		# if self.winner is not None:
-		# 	print(f"{self.winner} Wins!")
-		# else:
-		# 	print("Draw!")
+		if self.winner is not None:
+			print(f"{self.winner} Wins!")
+		else:
+			print("Draw!")
 
 	def get_pieces_with_moves(self, board):
 		pieces_with_moves = []

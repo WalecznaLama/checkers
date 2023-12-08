@@ -55,6 +55,7 @@ class King(Piece):
 		opponent = self.board.get_opponent_color()
 		for direction in moves:
 			hit_opponent = False  # opponent at tile
+			clear_jump = False
 			beaten_pose = None
 			beaten_pose_buff = None  # buffer for beaten pose - necessary because used in next loop
 			valid_behind_moves = []  # valid moves behind beaten opponent
@@ -64,12 +65,14 @@ class King(Piece):
 				if (self.board.is_tile_empty(move_tile) or move_tile == except_pose) and hit_opponent:
 					valid_behind_moves.append(move)
 					beaten_pose = beaten_pose_buff
-				elif self.board.get_tile_color(move_tile) == opponent:  # tile with opponent
-					hit_opponent = True
+					clear_jump = True
+				elif (self.board.get_tile_color(move_tile) == opponent) and not hit_opponent:  # first tile with opponent
 					beaten_pose_buff = move_tile
+					hit_opponent = True
 				elif hit_opponent:  # first not empty tile behind opponent
 					break
-			if hit_opponent:
+
+			if hit_opponent and clear_jump:
 				valid_jumps.append([beaten_pose, valid_behind_moves])
 				beaten_pose = None
 				valid_behind_moves = None
