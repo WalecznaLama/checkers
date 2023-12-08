@@ -1,5 +1,4 @@
-import time
-
+# import time
 
 def get_pieces_with_given_jumps(board, longest_chain_len):
 	pieces_with_best_jumps = []
@@ -43,10 +42,11 @@ class Game:
 		return self.valid_jumps
 
 	def final_message(self):
-		if self.winner is not None:
-			print(f"{self.winner} Wins!")
-		else:
-			print("Draw!")
+		print()
+		# if self.winner is not None:
+		# 	print(f"{self.winner} Wins!")
+		# else:
+		# 	print("Draw!")
 
 	def get_pieces_with_moves(self, board):
 		pieces_with_moves = []
@@ -79,7 +79,7 @@ class Game:
 
 	def handle_pose_input(self, board, pose):
 		selected_tile = board.get_tile(pose)  # TODO problem when jump? [pose=(J,-1)]
-		empty_output = [], [], -1
+		empty_output = [], [], [], -1
 		if not board.is_piece_selected():  # user select piece pose
 			self.get_pieces_with_best_jumps(board)
 			self.get_pieces_with_moves(board)
@@ -118,11 +118,8 @@ class Game:
 					print(f"Select tile with valid move.")
 					return False
 			if valid_select:
-				move_status = -1
 				king_column = -1
-				selected_jump = []
 				beaten_in_chain = []
-				moves_to = []
 				moves_from = []
 				if self.is_jump:
 					selected_jump = self.valid_jumps[no_jump]
@@ -133,7 +130,7 @@ class Game:
 						move_status = board.selected_piece.move(p)
 						if move_status == 2:
 							king_column = p[1]
-						board.draw()
+						# board.draw()
 						# time.sleep(1.5)
 					for op in beaten_in_chain:  # remove beaten pieces
 						board.get_tile(op).occupying_piece = None

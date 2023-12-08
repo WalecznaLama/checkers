@@ -3,7 +3,7 @@ import time
 import Board
 from Game import Game
 import ChessBot
-from robodk.Robot import Robot
+from Robot import Robot
 
 
 def player_input(board, game):
@@ -49,13 +49,13 @@ class Checkers:
 		board = Board.Board()
 		while self.running:
 			self.turn = board.get_turn()
-			board.draw()
+			# board.draw()
 			if not game.is_game_over(board):
 				# if self.turn == board.WHITE:
 				# 	coordinates = player_input(board, game)
 				# 	pose = Board.coordinate_to_pose(coordinates)
 				# else:
-				time.sleep(0.5)
+				# time.sleep(0.5)
 				pose = bot_input(board, game)
 				moves_from, moves_to, beaten_in_chain, king_column = game.handle_pose_input(board, pose)
 				if self.turn == board.WHITE:

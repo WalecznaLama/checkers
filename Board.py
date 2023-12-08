@@ -1,6 +1,5 @@
 from Pawn import Pawn
 from Tile import Tile
-from robodk.Robot import Robot
 
 
 def coordinate_to_pose(coordinate):  # Map coordinates (A1, B2, ...) to row, column / or number of jump when J*
@@ -221,4 +220,5 @@ class Board:
         index_ = 0 if self.turn == self.WHITE else self.BOARD_SIZE - 1
         row = self.tile_list[index_]
         for tile in row:
-            tile.occupying_piece.promotion_handled()
+            if not tile.is_empty():
+                tile.occupying_piece.promotion_handled()

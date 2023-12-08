@@ -121,6 +121,11 @@ class Robot:
     def turn(self, moves_from: list, moves_to: list, remove_pawn: list, king_column: int):
         self.wait_to_opponent()
         self.robot.setDO(self.SIGNAL_NAME, 1)
+
+        self.robot.setPoseTool(self.tool)
+        self.robot.MoveJ(self.t_home)
+        self.robot.setPoseFrame(self.f_board)
+
         king_column_ = king_column
 
         for i in range(len(moves_from)):
@@ -131,8 +136,9 @@ class Robot:
                 self.pawn_to_king(move_to[1])
                 king_column_ = -1  # promotion handled
 
-        for i in range(len(remove_pawn)):
-            self.remove_pawn(remove_pawn[i])
+        remove_pawn_ = [elem for elem in remove_pawn]  # set to list
+        for i in range(len(remove_pawn_)):
+            self.remove_pawn(remove_pawn_[i])
 
         self.robot.setDO(self.SIGNAL_NAME, 0)
         self.robot.MoveJ(self.t_home)
