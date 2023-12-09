@@ -53,6 +53,7 @@ class King(Piece):
 		valid_jumps = []
 		moves = self.possible_moves(pose)  # all possible piece moves, assuming that board is empty
 		opponent = self.board.get_opponent_color()
+		ally = self.board.get_turn()
 		for direction in moves:
 			hit_opponent = False  # opponent at tile
 			clear_jump = False
@@ -69,7 +70,7 @@ class King(Piece):
 				elif (self.board.get_tile_color(move_tile) == opponent) and not hit_opponent:  # first tile with opponent
 					beaten_pose_buff = move_tile
 					hit_opponent = True
-				elif hit_opponent:  # first not empty tile behind opponent
+				elif hit_opponent or self.board.get_tile_color(move_tile) == ally:  # first not empty tile behind opponent
 					break
 
 			if hit_opponent and clear_jump:

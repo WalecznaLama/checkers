@@ -49,12 +49,14 @@ class Pawn(Piece):
         return valid_jumps
 
     def _find_chain_jumps(self, current_position, beaten_pieces=None, except_pose=None):
+        all_chains = []
         if beaten_pieces is None:
             beaten_pieces = set()
+        else:
+            if current_position[0] in [0, 7]:  # skip when promotion to king
+                return all_chains
 
         valid_jumps = self._valid_jumps(current_position, except_pose=except_pose)
-        all_chains = []
-
         for beaten_pose, jump in valid_jumps:
             if beaten_pose not in beaten_pieces:
                 new_beaten_pieces = beaten_pieces.copy()

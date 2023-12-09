@@ -92,15 +92,19 @@ class Robot:
         self.used_kings += 1
 
     def place_dead(self):
-        stack = self.beaten_pawns % 2
-        height_multiply = self.beaten_pawns // 2
+        stack = self.beaten_pawns % 4
+        height_multiply = self.beaten_pawns // 4
 
-        self.move_j(self.t_beaten_stack, [stack*self.D_BETWEEN_TITLES, 0.0,
-                                          -self.D_APPROACH - (self.beaten_pawns * self.D_PAWN_HEIGHT)])
-        self.move_l(self.t_beaten_stack, [stack*self.D_BETWEEN_TITLES, 0.0, -(height_multiply * self.D_PAWN_HEIGHT)])
+        self.move_j(self.t_beaten_stack, [(stack % 2) * self.D_BETWEEN_TITLES,
+                                          (stack // 2) * self.D_BETWEEN_TITLES,
+                                          -self.D_APPROACH - (height_multiply * self.D_PAWN_HEIGHT)])
+        self.move_l(self.t_beaten_stack, [(stack % 2) * self.D_BETWEEN_TITLES,
+                                          (stack // 2) * self.D_BETWEEN_TITLES,
+                                          -(height_multiply * self.D_PAWN_HEIGHT)])
         self.p_detach.RunProgram()
         self.p_detach.WaitFinished()
-        self.move_l(self.t_beaten_stack, [stack*self.D_BETWEEN_TITLES, 0.0,
+        self.move_l(self.t_beaten_stack, [(stack % 2) * self.D_BETWEEN_TITLES,
+                                          (stack // 2) * self.D_BETWEEN_TITLES,
                                           -self.D_APPROACH - (height_multiply * self.D_PAWN_HEIGHT)])
         self.beaten_pawns += 1
 
