@@ -49,6 +49,9 @@ class Game:
 		else:
 			print("Draw!")
 
+	def get_winner(self):  # Returns w / b / ''
+		return self.winner[0].lower()
+
 	def get_pieces_with_moves(self, board):
 		pieces_with_moves = []
 		for row in range(board.BOARD_SIZE):

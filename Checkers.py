@@ -67,6 +67,11 @@ class Checkers:
 				game.final_message()
 				self.running = False
 
+		if game.get_winner() == board.WHITE:
+			self.WhiteRobot.set_win()
+		elif game.get_winner() == board.BLACK:
+			self.BlackRobot.set_win()
+
 
 if __name__ == "__main__":
 	checkers = Checkers()

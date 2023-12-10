@@ -35,6 +35,7 @@ class Robot:
         self.p_attach = self.Rdk.Item(f'Pick{self.color[0]}', ITEM_TYPE_PROGRAM)
         self.p_detach = self.Rdk.Item(f'Place{self.color[0]}', ITEM_TYPE_PROGRAM)
         self.p_wait = self.Rdk.Item(f'Wait{self.color[0]}', ITEM_TYPE_PROGRAM)
+        self.p_win = self.Rdk.Item(f'Win{self.color[0]}')
 
         self.used_kings = 0
         self.beaten_pawns = 0
@@ -151,3 +152,7 @@ class Robot:
 
         self.robot.setDO(self.SIGNAL_NAME, 0)
         self.robot.MoveJ(self.t_home)
+
+    def set_win(self):
+        self.p_win.RunProgram()
+        self.p_win.WaitFinished()
